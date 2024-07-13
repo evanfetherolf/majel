@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  chatbot_api:
+    build:
+      context: ./api
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
