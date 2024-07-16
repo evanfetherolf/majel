@@ -1,15 +1,36 @@
 import os
-
+from langchain.memory import ConversationBufferMemory
 from langchain.agents import AgentExecutor, Tool, create_tool_calling_agent
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_mongodb import MongoDBChatMessageHistory
 
 from dotenv import load_dotenv
 load_dotenv()
 
 CHATBOT_AGENT_MODEL = os.getenv("CHATBOT_AGENT_MODEL")
 
-chat_history=[]
+def get_session_history(session_id: str) -> MongoDBChatMessageHistory:
+    db_user = os.getenv("MONGODB_USERNAME")
+    db_pass = os.getenv("MONGODB_PASSWORD")
+    db_uri = os.getenv("MONGODB_URI")
+    return MongoDBChatMessageHistory(
+        connection_string=f"mongodb://{db_user}:{db_pass}@{db_uri}",
+        session_id="default",
+        database_name="chat_history",
+        collection_name="chat_histories"
+    )
+
+memory = ConversationBufferMemory(
+    memory_key="chat_history",
+    chat_memory=get_session_history("default"),
+    return_messages=True,
+    # return_messages is False by default. If false, it will only pass a string
+    # of all the messages concatenated together. Must be set to True to pass a
+    # list of messages to the executor.
+)
+
+
 
 system_prompt_str = """
 You are a friendly AI chatbot. You main purpose is to have conversations with
@@ -25,12 +46,14 @@ prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt_str),
         ("placeholder", "{chat_history}"),
+        # {chat_history} corresponds with ConversationBufferMemory.memory_key
         ("human", "{input}"),
         ("placeholder", "{agent_scratchpad}"),
     ]
 )
 
 tools = [
+    # Dummy tool because the model didn't like being passed an empty list
     Tool(
         name="Default",
         func=lambda: None,
@@ -51,4 +74,6 @@ chatbot_agent_executor = AgentExecutor(
     tools=tools,
     return_intermediate_steps=True,
     verbose=True,
+    handle_parsing_errors=True,
+    memory=memory,
 )
