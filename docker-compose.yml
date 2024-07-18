@@ -9,18 +9,16 @@ services:
     container_name: majel
     ports:
       - "8000:8000"
-    depends_on:
-      - mongodb
 
-  mongodb:
-    container_name: mongodb
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    restart: always
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
-      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
-    volumes:
-      - ./data/db:/data/db
-    command: mongod --auth
+        #  mongodb:
+        # container_name: mongodb
+        # image: mongo:latest
+        # ports:
+        # - "27017:27017"
+        # restart: always
+        # environment:
+        # - MONGO_INITDB_ROOT_USERNAME=${MONGO_INITDB_ROOT_USERNAME}
+        # - MONGO_INITDB_ROOT_PASSWORD=${MONGO_INITDB_ROOT_PASSWORD}
+        # volumes:
+        # - ./data/db:/data/db
+        # command: mongod --auth

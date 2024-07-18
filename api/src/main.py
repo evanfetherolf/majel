@@ -1,16 +1,27 @@
-import os
 import logging
 from fastapi import FastAPI
 from agents.chatbot_agent import chatbot_agent_executor
 from models.chatbot_query import ChatbotInput, ChatbotOutput
 from utils.async_utils import async_retry
-
-logging.basicConfig(level=logging.DEBUG)
+from utils.db_connection import DBConnection
 
 app = FastAPI(
     title="Majel",
     description="Endpoints for a chatbot",
 )
+
+db = DBConnection()
+
+@app.on_event("startup")
+def startup_event():
+    db.get_connection()
+    logging.info("Database connection opened")
+
+@app.on_event("shutdown")
+def shutdown_event():
+    db.close_connection()
+    logging.info("Database connection closed")
+
 
 @async_retry(max_retries=10, delay=1)
 async def invoke_agent_with_retry(input: str):
