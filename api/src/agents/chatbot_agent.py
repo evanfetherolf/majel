@@ -3,6 +3,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.agents import AgentExecutor, Tool, create_tool_calling_agent
 from langchain.prompts import ChatPromptTemplate
 from langchain_openai import ChatOpenAI
+from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_mongodb import MongoDBChatMessageHistory
 
 from dotenv import load_dotenv
@@ -45,15 +46,8 @@ prompt = ChatPromptTemplate.from_messages(
         ("placeholder", "{agent_scratchpad}"),
     ]
 )
-
-tools = [
-    # Dummy tool because the model didn't like being passed an empty list
-    Tool(
-        name="Default",
-        func=lambda: None,
-        description="This tool does nothing."
-    )
-]
+tavily_search_results = TavilySearchResults()
+tools = [tavily_search_results]
 
 llm = ChatOpenAI(
     model=CHATBOT_AGENT_MODEL,
