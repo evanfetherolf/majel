@@ -1,4 +1,3 @@
-import os
 import logging
 from fastapi import FastAPI
 from agents.chatbot_agent import chatbot_agent_executor

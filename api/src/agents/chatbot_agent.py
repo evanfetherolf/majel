@@ -6,9 +6,6 @@ from langchain_openai import ChatOpenAI
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_mongodb import MongoDBChatMessageHistory
 
-from dotenv import load_dotenv
-load_dotenv()
-
 CHATBOT_AGENT_MODEL = os.getenv("CHATBOT_AGENT_MODEL")
 
 def get_session_history(session_id: str) -> MongoDBChatMessageHistory:
