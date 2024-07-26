@@ -10,17 +10,17 @@ app = FastAPI(
     description="Endpoints for a chatbot",
 )
 
-db = DBConnection()
+# db = DBConnection()
 
-@app.on_event("startup")
-def startup_event():
-    db.get_connection()
-    logging.info("Database connection opened")
+# @app.on_event("startup")
+# def startup_event():
+#     db.get_connection()
+#     logging.info("Database connection opened")
 
-@app.on_event("shutdown")
-def shutdown_event():
-    db.close_connection()
-    logging.info("Database connection closed")
+# @app.on_event("shutdown")
+# def shutdown_event():
+#     db.close_connection()
+#     logging.info("Database connection closed")
 
 
 @async_retry(max_retries=10, delay=1)

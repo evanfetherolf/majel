@@ -18,34 +18,35 @@ class SQLiteDB():
         self.db_path = "entities.db"
 
     def get_connection(self):
+        global conn
         if conn is None:
             conn = sqlite3.connect(self.db_path, check_same_thread=False)
         return conn
 
 class SQLiteConversationEntityMemory(ConversationEntityMemory):
-    def __init__(
-            self,
-            llm,
-            chat_history_key: str = "chat_history",
-        ):
-        self.chat_history_key = chat_history_key
-        self.entity_store = None
+    def __init__(self, llm,):
+        super().__init__(llm=llm)
+        self.entity_store = SQLiteEntityStore()
         self.llm=llm
         self.return_messages = True
-        self.__conn = None
-        self.__fields_set__ = super.__fields_set__
-        super.__init__()
+        # self.conn = None
+        # self.__post_init__()
 
-    def open_entity_store(self):
-        if self.__conn is None:
-            self.__conn == sqlite3.connect(
-                "entities.db",
-                check_same_thread=False
-            )
-            logging.info("Database connection established...")
-        self.entity_store = SQLiteEntityStore(self.conn)
+    # def __post_init__(self):
+    #     self._conn = None
+        
 
-    def close_entity_store(self):
-        if self.__conn is not None:
-            self.__conn.close()
-            logging.info("Database connection closed...")
+    # def open_entity_store(self):
+    #     if self.conn is None:
+    #         self.conn = sqlite3.connect(
+    #             "entities.db",
+    #             check_same_thread=False
+    #         )
+    #         logging.info("Database connection established...")
+    #     self.entity_store = SQLiteEntityStore(self.conn)
+
+    # def close_entity_store(self):
+    #     if self.conn is not None:
+    #         self.conn.close()
+    #         self.conn = None
+    #         logging.info("Database connection closed...")

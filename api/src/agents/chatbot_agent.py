@@ -34,7 +34,7 @@ You are a helpful assistant.
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt_str),
-        ("placeholder", "{chat_history}"),
+        ("placeholder", "{history}"),
         # {chat_history} corresponds with ConversationBufferMemory.memory_key
         ("human", "{input}"),
         ("placeholder", "{agent_scratchpad}"),
